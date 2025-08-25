@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelos de Negocio Canvas</title>
+    <!-- Tailwind CSS CDN para estilos base y responsividad -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome CDN para los iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* Definición de la paleta de colores CSS */
+        :root {
+            --gunmetal: #022b3a;
+            --teal: #1f7a8c;
+            --columbia-blue: #bfdbf7;
+            --lavender-web: #e1e5f2;
+            --white: #ffffff;
+        }
+
+        /* Estilos personalizados para el layout del Canvas y efectos visuales - TEMA OSCURO */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--gunmetal); /* Fondo oscuro principal */
+            color: var(--lavender-web); /* Texto claro general */
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .canvas-wrapper {
+            max-width: 1280px;
+            margin: 40px auto;
+            background-color: var(--teal); /* Fondo más claro para la tarjeta del canvas */
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); /* Sombra más oscura */
+            position: relative;
+            margin-bottom: 60px;
+        }
+
+        .canvas-wrapper h1 {
+            text-align: center;
+            color: var(--lavender-web); /* Título en lavender-web */
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .canvas-wrapper h1::after {
+            content: '';
+            width: 100px;
+            height: 4px;
+            background-color: var(--columbia-blue); /* Subrayado en columbia-blue */
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 0;
+            border-radius: 2px;
+        }
+
+        .business-canvas {
+            display: grid;
+            gap: 15px;
+            text-align: center;
+        }
+
+        .business-canvas-box {
+            background-color: #1a5a6a; /* Un tono entre gunmetal y teal para las cajas */
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--columbia-blue); /* Borde en columbia-blue */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            min-height: 160px;
+            text-align: left;
+            color: var(--lavender-web); /* Texto en lavender-web */
+            font-size: 0.95em;
+        }
+
+        .business-canvas-box:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5); /* Sombra más oscura al pasar el mouse */
+        }
+
+        .business-canvas-box h3 {
+            margin: 0 0 10px;
+            color: var(--columbia-blue); /* Encabezado en columbia-blue */
+            font-size: 1.3em;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(191, 219, 247, 0.4); /* Subrayado semi-transparente de columbia-blue */
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .business-canvas-box h3 .fa-icon {
+            color: var(--columbia-blue); /* Icono en columbia-blue */
+            font-size: 1.1em;
+        }
+
+        /* Estilos específicos para iconos por sección (manteniendo el contraste) */
+        .grid-propuesta h3 .fa-icon { color: var(--white); } /* Blanco para Propuesta de Valor */
+        .grid-costos h3 .fa-icon { color: var(--lavender-web); } /* lavender-web para Costos */
+        .grid-ingresos h3 .fa-icon { color: var(--lavender-web); } /* lavender-web para Ingresos */
+
+
+        .business-canvas-box ul {
+            list-style: disc;
+            padding-left: 20px;
+            margin: 0;
+            flex-grow: 1;
+            overflow: auto;
+        }
+
+        .business-canvas-box li {
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            color: var(--lavender-web);
+        }
+
+        /* Estilos específicos para la Propuesta de Valor (centro) */
+        .grid-propuesta {
+            background-color: var(--columbia-blue); /* Fondo en columbia-blue */
+            border-color: var(--teal);
+            color: var(--gunmetal); /* Texto oscuro para la propuesta de valor */
+        }
+        .grid-propuesta h3 {
+            color: var(--gunmetal); /* Encabezado en gunmetal */
+            border-bottom-color: rgba(2, 43, 58, 0.4);
+        }
+        .grid-propuesta h3 .fa-icon {
+            color: var(--gunmetal);
+        }
+        .grid-propuesta ul li {
+            color: var(--gunmetal);
+        }
+
+        /* Estilos específicos para Costos e Ingresos (parte inferior) */
+        .grid-costos {
+            background-color: #104a5a; /* Un teal más oscuro para costos */
+            border-color: var(--columbia-blue);
+        }
+        .grid-costos h3 {
+            color: var(--lavender-web); /* Encabezado en lavender-web */
+            border-bottom-color: rgba(225, 229, 242, 0.4);
+        }
+        .grid-ingresos {
+            background-color: #1a5a4a; /* Un tono verdoso oscuro para ingresos */
+            border-color: var(--columbia-blue);
+        }
+        .grid-ingresos h3 {
+            color: var(--lavender-web); /* Encabezado en lavender-web */
+            border-bottom-color: rgba(225, 229, 242, 0.4);
+        }
+
+        /* Media queries para responsividad y estructura del grid simplificada */
+
+        /* Mobile layout (por defecto, single column stack) */
+        .business-canvas {
+            grid-template-columns: 1fr;
+        }
+        /* Asignación de áreas para cada bloque del Canvas en móvil (orden secuencial) */
+        .grid-socios { order: 1; }
+        .grid-actividades { order: 2; }
+        .grid-recursos { order: 3; }
+        .grid-propuesta { order: 4; }
+        .grid-relaciones { order: 5; }
+        .grid-canales { order: 6; }
+        .grid-segmentos { order: 7; }
+        .grid-costos { order: 8; }
+        .grid-ingresos { order: 9; }
+
+
+        /* Tablet layout (min-width: 768px) */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .business-canvas {
+                grid-template-columns: repeat(2, 1fr); /* 2 columnas */
+                grid-template-areas:
+                    "socios actividades"
+                    "recursos propuesta"
+                    "relaciones canales"
+                    "segmentos segmentos" /* Segmentos ocupa toda la fila para destacarse */
+                    "costos ingresos";
+            }
+            /* Reset orders for tablet to allow grid-area to take over */
+            .grid-socios, .grid-actividades, .grid-recursos, .grid-propuesta,
+            .grid-relaciones, .grid-canales, .grid-segmentos, .grid-costos, .grid-ingresos {
+                order: unset;
+            }
+        }
+
+        /* Desktop layout (min-width: 1024px) */
+        @media (min-width: 1024px) {
+            .business-canvas {
+                grid-template-columns: repeat(5, 1fr); /* 5 columnas para desktop */
+                grid-template-areas:
+                    "socios actividades propuesta relaciones segmentos"
+                    "recursos actividades propuesta canales segmentos"
+                    "costos costos costos ingresos ingresos";
+            }
+            /* Reset orders for desktop to allow grid-area to take over */
+            .grid-socios, .grid-actividades, .grid-recursos, .grid-propuesta,
+            .grid-relaciones, .grid-canales, .grid-segmentos, .grid-costos, .grid-ingresos {
+                order: unset;
+            }
+
+            /* Asignación de áreas más explícita para desktop */
+            /* El layout tradicional de Canvas:
+               Socios | Actividades | Propuesta | Relaciones | Segmentos
+               Recursos| Actividades | Propuesta | Canales    | Segmentos
+               ---------------------------------------------------------
+               Costos  | Costos      | Costos    | Ingresos   | Ingresos
+            */
+            .grid-socios { grid-column: 1 / 2; grid-row: 1 / 3; }
+            .grid-actividades { grid-column: 2 / 3; grid-row: 1 / 3; }
+            .grid-recursos { grid-column: 1 / 2; grid-row: 2 / 3; } /* Ajustado para que Recursos no sobrescriba Socios */
+            .grid-propuesta { grid-column: 3 / 4; grid-row: 1 / 3; }
+            .grid-relaciones { grid-column: 4 / 5; grid-row: 1 / 2; }
+            .grid-canales { grid-column: 4 / 5; grid-row: 2 / 3; }
+            .grid-segmentos { grid-column: 5 / 6; grid-row: 1 / 3; }
+            .grid-costos { grid-column: 1 / 4; grid-row: 3 / 4; }
+            .grid-ingresos { grid-column: 4 / 6; grid-row: 3 / 4; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Canvas para la Idea 1: Venta de cursos especializados en línea -->
+    <div class="canvas-wrapper">
+        <h1>Canvas de Negocio: Cursos Especializados en Línea</h1>
+        <div class="business-canvas">
+            <div class="business-canvas-box grid-socios">
+                <h3><i class="fas fa-handshake fa-icon"></i> Socios Clave</h3>
+                <ul>
+                    <li>Expertos/Profesores en Shopify, IA, Dropshipping.</li>
+                    <li>Plataformas de Pago (Stripe, PayPal).</li>
+                    <li>Plataformas de Videoconferencia (Zoom, Google Meet).</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-actividades">
+                <h3><i class="fas fa-cogs fa-icon"></i> Actividades Clave</h3>
+                <ul>
+                    <li>Creación de contenido para cursos.</li>
+                    <li>Marketing y promoción de los cursos.</li>
+                    <li>Gestión de clientes (reservas, pagos, soporte).</li>
+                    <li>Enseñanza en vivo.</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-recursos">
+                <h3><i class="fas fa-boxes fa-icon"></i> Recursos Clave</h3>
+                <ul>
+                    <li>Conocimiento y experiencia de los profesores.</li>
+                    <li>Plataforma web para cursos y reservas.</li>
+                    <li>Herramientas de comunicación (software de videoconferencia).</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-propuesta">
+                <h3><i class="fas fa-lightbulb fa-icon"></i> Propuesta de Valor</h3>
+                <ul>
+                    <li>Formación **rápida y práctica** en habilidades específicas.</li>
+                    <li>**Interacción directa** en vivo con expertos para resolución de dudas.</li>
+                    <li>**Grupos reducidos** (1-3 personas) para atención personalizada.</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-relaciones">
+                <h3><i class="fas fa-heart fa-icon"></i> Relación con Clientes</h3>
+                <ul>
+                    <li>Atención personalizada durante las sesiones y soporte post-curso.</li>
+                    <li>Creación de una comunidad en línea (WhatsApp, Telegram).</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-canales">
+                <h3><i class="fas fa-share-alt fa-icon"></i> Canales</h3>
+                <ul>
+                    <li>Redes Sociales (Instagram, TikTok, LinkedIn).</li>
+                    <li>Email Marketing (Newsletters).</li>
+                    <li>Marketing de Contenidos (Blog).</li>
+                    <li>Plataforma web propia.</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-segmentos">
+                <h3><i class="fas fa-users fa-icon"></i> Segmentos de Clientes</h3>
+                <ul>
+                    <li>**Emprendedores** (dueños de pequeños negocios).</li>
+                    <li>**Estudiantes y profesionales** que buscan nuevas habilidades.</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-costos">
+                <h3><i class="fas fa-dollar-sign fa-icon"></i> Estructura de Costos</h3>
+                <ul>
+                    <li>Honorarios de profesores.</li>
+                    <li>Marketing y publicidad digital.</li>
+                    <li>Mantenimiento de la plataforma web (hosting, dominio).</li>
+                    <li>Licencias de software (Zoom, email marketing).</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-ingresos">
+                <h3><i class="fas fa-money-bill-wave fa-icon"></i> Fuentes de Ingresos</h3>
+                <ul>
+                    <li>Venta de cursos por sesión.</li>
+                    <li>Venta de paquetes de cursos con descuento.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Canvas para la Idea 2: Venta de repuestos a regiones -->
+    <div class="canvas-wrapper">
+        <h1>Canvas de Negocio: Venta de Repuestos a Regiones</h1>
+        <div class="business-canvas">
+            <div class="business-canvas-box grid-socios">
+                <h3><i class="fas fa-handshake fa-icon"></i> Socios Clave</h3>
+                <ul>
+                    <li>Proveedores de repuestos (talleres, desarmadurías en Santiago).</li>
+                    <li>Empresas de envíos (Starken, Chilexpress, Correos de Chile).</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-actividades">
+                <h3><i class="fas fa-tasks fa-icon"></i> Actividades Clave</h3>
+                <ul>
+                    <li>Búsqueda y cotización de repuestos.</li>
+                    <li>Atención al cliente (gestión de solicitudes).</li>
+                    <li>Logística y envíos (empaquetado y despacho).</li>
+                    <li>Marketing digital del servicio.</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-recursos">
+                <h3><i class="fas fa-box-open fa-icon"></i> Recursos Clave</h3>
+                <ul>
+                    <li>Base de datos de proveedores de repuestos.</li>
+                    <li>Plataforma web con formulario de cotización.</li>
+                    <li>Capital de trabajo para la adquisición de repuestos.</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-propuesta">
+                <h3><i class="fas fa-tags fa-icon"></i> Propuesta de Valor</h3>
+                <ul>
+                    <li>**Ahorro de tiempo y esfuerzo** para el cliente.</li>
+                    <li>Ofrecer los **mejores precios** del mercado.</li>
+                    <li>**Comodidad y rapidez** en la entrega a domicilio.</li>
+                    <li>**Confiabilidad** en la búsqueda y envío.</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-relaciones">
+                <h3><i class="fas fa-comments fa-icon"></i> Relación con Clientes</h3>
+                <ul>
+                    <li>Atención personalizada para cada cotización (teléfono, WhatsApp).</li>
+                    <li>Transparencia en tiempos de envío y costos.</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-canales">
+                <h3><i class="fas fa-truck fa-icon"></i> Canales</h3>
+                <ul>
+                    <li>Plataforma web propia para solicitudes.</li>
+                    <li>Anuncios pagados (Google Ads).</li>
+                    <li>Redes Sociales (Facebook, Instagram).</li>
+                    <li>Marketplaces online.</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-segmentos">
+                <h3><i class="fas fa-map-marker-alt fa-icon"></i> Segmentos de Clientes</h3>
+                <ul>
+                    <li>**Personas en regiones** sin acceso a repuestos.</li>
+                    <li>**Personas ocupadas en Santiago** que valoran su tiempo.</li>
+                    <li>**Talleres y mecánicos** que necesitan agilizar la compra de repuestos.</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-costos">
+                <h3><i class="fas fa-hand-holding-usd fa-icon"></i> Estructura de Costos</h3>
+                <ul>
+                    <li>Adquisición de repuestos.</li>
+                    <li>Costos de envío.</li>
+                    <li>Marketing y publicidad online.</li>
+                    <li>Mantenimiento de la plataforma web.</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-ingresos">
+                <h3><i class="fas fa-money-check-alt fa-icon"></i> Fuentes de Ingresos</h3>
+                <ul>
+                    <li>Margen de venta sobre cada repuesto.</li>
+                    <li>Posible tarifa fija por servicio de búsqueda/cotización.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Canvas para la Idea 3: Servicio de soporte técnico web por hora -->
+    <div class="canvas-wrapper">
+        <h1>Canvas de Negocio: Soporte Técnico Web por Hora</h1>
+        <div class="business-canvas">
+            <div class="business-canvas-box grid-socios">
+                <h3><i class="fas fa-users-cog fa-icon"></i> Socios Clave</h3>
+                <ul>
+                    <li>Freelancers expertos (diseñadores, programadores, creadores de contenido).</li>
+                    <li>Plataformas de pago.</li>
+                    <li>Plataformas de comunicación (Zoom, TeamViewer).</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-actividades">
+                <h3><i class="fas fa-laptop-code fa-icon"></i> Actividades Clave</h3>
+                <ul>
+                    <li>Reclutamiento y evaluación de expertos.</li>
+                    <li>Gestión de citas y reservas.</li>
+                    <li>Soporte técnico en vivo (las sesiones de trabajo).</li>
+                    <li>Marketing del servicio.</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-recursos">
+                <h3><i class="fas fa-user-tie fa-icon"></i> Recursos Clave</h3>
+                <ul>
+                    <li>Talento humano (los expertos).</li>
+                    <li>Plataforma de reservas online.</li>
+                    <li>Herramientas de colaboración (compartir pantalla).</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-propuesta">
+                <h3><i class="fas fa-lightbulb fa-icon"></i> Propuesta de Valor</h3>
+                <ul>
+                    <li>**Soluciones inmediatas** para urgencias web.</li>
+                    <li>**Flexibilidad** de contratación por horas.</li>
+                    <li>**Aprendizaje colaborativo** cliente-experto.</li>
+                    <li>**Atención personalizada** 1 a 1.</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-relaciones">
+                <h3><i class="fas fa-headset fa-icon"></i> Relación con Clientes</h3>
+                <ul>
+                    <li>Asesoría y guía durante el proceso.</li>
+                    <li>Sistema de evaluación de la calidad del servicio.</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-canales">
+                <h3><i class="fas fa-globe fa-icon"></i> Canales</h3>
+                <ul>
+                    <li>Redes Sociales (LinkedIn, Instagram).</li>
+                    <li>Marketing de Contenidos (blog con soluciones).</li>
+                    <li>Plataforma web propia con calendario de reservas.</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-segmentos">
+                <h3><i class="fas fa-building fa-icon"></i> Segmentos de Clientes</h3>
+                <ul>
+                    <li>**Pequeños emprendedores y PyMEs**.</li>
+                    <li>**Freelancers y profesionales** con necesidades puntuales.</li>
+                    <li>**Creadores de contenido** (Youtubers, Bloggers).</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-costos">
+                <h3><i class="fas fa-piggy-bank fa-icon"></i> Estructura de Costos</h3>
+                <ul>
+                    <li>Honorarios de los expertos (comisión o tarifa fija).</li>
+                    <li>Publicidad digital.</li>
+                    <li>Licencias de software de reservas y videoconferencia.</li>
+                </ul>
+            </div>
+            <div class="business-canvas-box grid-ingresos">
+                <h3><i class="fas fa-chart-line fa-icon"></i> Fuentes de Ingresos</h3>
+                <ul>
+                    <li>Tarifa por hora de servicio.</li>
+                    <li>Venta de paquetes de horas con descuento.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
