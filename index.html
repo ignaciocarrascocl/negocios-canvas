@@ -42,7 +42,7 @@
         .canvas-wrapper h1 {
             text-align: center;
             color: var(--lavender-web); /* Título en lavender-web */
-            margin-bottom: 30px;
+            margin-bottom: 20px; /* Reducido para dejar espacio para la descripción */
             font-size: 2.5em;
             font-weight: 700;
             position: relative;
@@ -61,10 +61,22 @@
             border-radius: 2px;
         }
 
+        .business-description {
+            text-align: center;
+            color: var(--columbia-blue);
+            margin-bottom: 30px;
+            font-size: 1.1em;
+            line-height: 1.4;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         .business-canvas {
             display: grid;
             gap: 15px;
             text-align: center;
+            margin-bottom: 30px; /* Espacio antes de la historia de usuario */
         }
 
         .business-canvas-box {
@@ -160,6 +172,41 @@
             border-bottom-color: rgba(225, 229, 242, 0.4);
         }
 
+        .user-story-section {
+            background-color: #1f7a8c; /* Mismo color del canvas-wrapper para integrar */
+            border-top: 2px solid var(--columbia-blue);
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center; /* Centrar el texto */
+        }
+
+        .user-story-section h3 {
+            color: var(--lavender-web);
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Centrar el icono y el texto */
+            gap: 10px;
+        }
+
+        .user-story-section h3 .fa-icon {
+            color: var(--columbia-blue);
+            font-size: 1.2em;
+        }
+
+        .user-story-section p {
+            color: var(--lavender-web);
+            font-size: 1.05em;
+            line-height: 1.5;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         /* Media queries para responsividad y estructura del grid simplificada */
 
         /* Mobile layout (por defecto, single column stack) */
@@ -220,7 +267,7 @@
             */
             .grid-socios { grid-column: 1 / 2; grid-row: 1 / 3; }
             .grid-actividades { grid-column: 2 / 3; grid-row: 1 / 3; }
-            .grid-recursos { grid-column: 1 / 2; grid-row: 2 / 3; } /* Ajustado para que Recursos no sobrescriba Socios */
+            .grid-recursos { grid-column: 1 / 2; grid-row: 2 / 3; }
             .grid-propuesta { grid-column: 3 / 4; grid-row: 1 / 3; }
             .grid-relaciones { grid-column: 4 / 5; grid-row: 1 / 2; }
             .grid-canales { grid-column: 4 / 5; grid-row: 2 / 3; }
@@ -235,6 +282,10 @@
     <!-- Canvas para la Idea 1: Venta de cursos especializados en línea -->
     <div class="canvas-wrapper">
         <h1>Canvas de Negocio: Cursos Especializados en Línea</h1>
+        <p class="business-description">
+            Este negocio ofrece cursos cortos y prácticos, de una sesión y en línea, dirigidos a emprendedores y estudiantes.
+            Cubre temas como Shopify, IA para redes sociales y dropshipping, brindando formación especializada a grupos reducidos para un aprendizaje efectivo.
+        </p>
         <div class="business-canvas">
             <div class="business-canvas-box grid-socios">
                 <h3><i class="fas fa-handshake fa-icon"></i> Socios Clave</h3>
@@ -309,11 +360,22 @@
                 </ul>
             </div>
         </div>
+        <div class="user-story-section">
+            <h3><i class="fas fa-user-circle fa-icon"></i> Historia de Usuario</h3>
+            <p>
+                Como Ana, una emprendedora que quiere digitalizar su tienda, necesito aprender a usar Shopify rápidamente y con ayuda personalizada,
+                para poder lanzar mi tienda en línea sin frustraciones técnicas y generar más ventas.
+            </p>
+        </div>
     </div>
 
     <!-- Canvas para la Idea 2: Venta de repuestos a regiones -->
     <div class="canvas-wrapper">
         <h1>Canvas de Negocio: Venta de Repuestos a Regiones</h1>
+        <p class="business-description">
+            Plataforma de cotización y envío de repuestos automotrices a nivel nacional, solucionando la dificultad de encontrar piezas en regiones.
+            Ofrece los mejores precios del mercado y envíos rápidos, atendiendo la demanda de clientes que buscan comodidad y eficiencia.
+        </p>
         <div class="business-canvas">
             <div class="business-canvas-box grid-socios">
                 <h3><i class="fas fa-handshake fa-icon"></i> Socios Clave</h3>
@@ -353,6 +415,7 @@
                 <ul>
                     <li>Atención personalizada para cada cotización (teléfono, WhatsApp).</li>
                     <li>Transparencia en tiempos de envío y costos.</li>
+                    <li>Gestión de garantías y devoluciones.</li>
                 </ul>
             </div>
             <div class="business-canvas-box grid-canales">
@@ -389,11 +452,24 @@
                 </ul>
             </div>
         </div>
+        <div class="user-story-section">
+            <h3><i class="fas fa-user-circle fa-icon"></i> Historia de Usuario</h3>
+            <p>
+                Como Juan, un mecánico de Antofagasta, necesito un repuesto específico para un cliente urgente.
+                Busco una forma rápida y confiable de cotizar el mejor precio en Santiago y recibirlo al día siguiente
+                sin tener que viajar o buscar por horas, para no perder tiempo y mantener satisfechos a mis clientes.
+            </p>
+        </div>
     </div>
 
     <!-- Canvas para la Idea 3: Servicio de soporte técnico web por hora -->
     <div class="canvas-wrapper">
         <h1>Canvas de Negocio: Soporte Técnico Web por Hora</h1>
+        <p class="business-description">
+            Servicio de asistencia en vivo y por hora para necesidades urgentes de diseño web, desarrollo de landing pages,
+            generación de contenido y diseño de presentaciones. Conecta a clientes con expertos en tiempo real para
+            soluciones rápidas y personalizadas.
+        </p>
         <div class="business-canvas">
             <div class="business-canvas-box grid-socios">
                 <h3><i class="fas fa-users-cog fa-icon"></i> Socios Clave</h3>
@@ -467,6 +543,14 @@
                     <li>Venta de paquetes de horas con descuento.</li>
                 </ul>
             </div>
+        </div>
+        <div class="user-story-section">
+            <h3><i class="fas fa-user-circle fa-icon"></i> Historia de Usuario</h3>
+            <p>
+                Como María, una dueña de PyME con una presentación importante mañana, necesito ayuda urgente para ajustar
+                el diseño y crear contenido impactante para mi sitio web. Quiero una sesión en vivo con un experto
+                que me ayude a resolverlo de inmediato y asegurar el éxito de mi presentación.
+            </p>
         </div>
     </div>
 
