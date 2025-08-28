@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Actas CNTV</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #000000;
+            --secondary-color: #6c757d;
+            --light-gray: #f8f9fa;
+            --border-color: #dee2e6;
+        }
+        
+        body {
+            background-color: #ffffff;
+            color: #000000;
+        }
+        
+        .header-section {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem 0;
+        }
+        
+        .filters-section {
+            background-color: var(--light-gray);
+            border-bottom: 2px solid var(--border-color);
+            padding: 2rem 0;
+        }
+        
+        .results-section {
+            padding: 2rem 0;
+        }
+        
+        .filter-card {
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background-color: white;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .table th {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+        
+        .table td {
+            border-color: var(--border-color);
+        }
+        
+        .badge {
+            background-color: var(--secondary-color);
+        }
+        
+        .search-box {
+            border: 2px solid var(--border-color);
+        }
+        
+        .search-box:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.25);
+        }
+        
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="display-4 fw-bold mb-0">
+                        <i class="fas fa-file-alt me-3"></i>
+                        Consulta de Actas CNTV
+                    </h1>
+                    <p class="lead mb-0">Sistema de búsqueda y consulta de actas del Consejo Nacional de Televisión</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="filters-section">
+        <div class="container">
+            <div class="filter-card p-4">
+                <h3 class="mb-4">
+                    <i class="fas fa-filter me-2"></i>
+                    Filtros de Búsqueda
+                </h3>
+                
+                <div class="row g-3">
+                    <!-- Search Box -->
+                    <div class="col-md-6">
+                        <label for="search" class="form-label fw-bold">Búsqueda General</label>
+                        <input type="text" class="form-control search-box" id="search" placeholder="Buscar en todas las columnas...">
+                    </div>
+                    
+                    <!-- Date Range -->
+                    <div class="col-md-3">
+                        <label for="dateFrom" class="form-label fw-bold">Fecha Desde</label>
+                        <input type="date" class="form-control" id="dateFrom">
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label for="dateTo" class="form-label fw-bold">Fecha Hasta</label>
+                        <input type="date" class="form-control" id="dateTo">
+                    </div>
+                    
+                    <!-- Specific Filters -->
+                    <div class="col-md-4">
+                        <label for="tipoTema" class="form-label fw-bold">Tipo de Tema</label>
+                        <select class="form-select" id="tipoTema">
+                            <option value="">Todos</option>
+                            <option value="Fondo CNTV">Fondo CNTV</option>
+                            <option value="Reposición de denuncia">Reposición de denuncia</option>
+                            <option value="Concesión">Concesión</option>
+                            <option value="Sanción">Sanción</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label for="concesionario" class="form-label fw-bold">Concesionario</label>
+                        <select class="form-select" id="concesionario">
+                            <option value="">Todos</option>
+                            <option value="TV Educa">TV Educa</option>
+                            <option value="Canal 13">Canal 13</option>
+                            <option value="TVN">TVN</option>
+                            <option value="Mega">Mega</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label for="normativa" class="form-label fw-bold">Normativa</label>
+                        <select class="form-select" id="normativa">
+                            <option value="">Todas</option>
+                            <option value="Ley N° 18.383">Ley N° 18.383</option>
+                            <option value="Ley N°20.422">Ley N°20.422</option>
+                            <option value="DS N°32">DS N°32</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="col-12 mt-4">
+                        <button type="button" class="btn btn-primary me-2" id="applyFilters">
+                            <i class="fas fa-search me-2"></i>
+                            Aplicar Filtros
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" id="clearFilters">
+                            <i class="fas fa-times me-2"></i>
+                            Limpiar Filtros
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="results-section">
+        <div class="container-fluid">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3>
+                            <i class="fas fa-table me-2"></i>
+                            Resultados
+                            <span class="badge ms-2" id="resultsCount">1 resultado</span>
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="resultsTable">
+                            <thead>
+                                <tr>
+                                    <th>N° Caso</th>
+                                    <th>Normativas</th>
+                                    <th>Nombre del Acta</th>
+                                    <th>Fecha</th>
+                                    <th>Tipo de Tema</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultsBody">
+                                <tr>
+                                    <td class="caso">C-9337</td>
+                                    <td class="normativas">DS N°32, Ley N° 18.383, Ley N°20.422</td>
+                                    <td class="nombre-acta">Acta de la Sesión Ordinaria del Consejo Nacional de Televisión del día lunes 04 de enero de 2021</td>
+                                    <td class="fecha">04/01/2021</td>
+                                    <td class="tipo-tema">
+                                        <span class="badge">Fondo CNTV</span>
+                                        <span class="badge">Reposición de denuncia</span>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-eye me-1"></i>
+                                            Ver Acta
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <nav aria-label="Navegación de resultados">
+                        <ul class="pagination justify-content-center" id="pagination">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#">Anterior</a>
+                            </li>
+                            <li class="page-item active">
+                                <a class="page-link" href="#">1</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Siguiente</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- List.js for filtering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
+    
+    <script>
+        // Initialize List.js for filtering
+        var options = {
+            valueNames: ['caso', 'normativas', 'nombre-acta', 'fecha', 'tipo-tema'],
+            searchClass: 'search-box'
+        };
+        
+        var resultsList = new List('results-section', options);
+        
+        // Filter functionality
+        document.getElementById('applyFilters').addEventListener('click', function() {
+            applyFilters();
+        });
+        
+        document.getElementById('clearFilters').addEventListener('click', function() {
+            clearFilters();
+        });
+        
+        document.getElementById('search').addEventListener('keyup', function() {
+            resultsList.search(this.value);
+            updateResultsCount();
+        });
+        
+        function applyFilters() {
+            var searchTerm = document.getElementById('search').value;
+            var tipoTema = document.getElementById('tipoTema').value;
+            var normativa = document.getElementById('normativa').value;
+            
+            resultsList.filter(function(item) {
+                var matchesTipo = !tipoTema || item.values()['tipo-tema'].includes(tipoTema);
+                var matchesNormativa = !normativa || item.values()['normativas'].includes(normativa);
+                
+                return matchesTipo && matchesNormativa;
+            });
+            
+            if (searchTerm) {
+                resultsList.search(searchTerm);
+            }
+            
+            updateResultsCount();
+        }
+        
+        function clearFilters() {
+            document.getElementById('search').value = '';
+            document.getElementById('tipoTema').value = '';
+            document.getElementById('concesionario').value = '';
+            document.getElementById('normativa').value = '';
+            document.getElementById('dateFrom').value = '';
+            document.getElementById('dateTo').value = '';
+            
+            resultsList.filter();
+            resultsList.search('');
+            updateResultsCount();
+        }
+        
+        function updateResultsCount() {
+            var count = resultsList.visibleItems.length;
+            var countText = count === 1 ? '1 resultado' : count + ' resultados';
+            document.getElementById('resultsCount').textContent = countText;
+        }
+        
+        // Initialize results count
+        updateResultsCount();
+    </script>
+</body>
+</html>
