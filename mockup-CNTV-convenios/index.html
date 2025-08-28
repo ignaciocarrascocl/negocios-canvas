@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convenios CNTV</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .filter-section {
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .result-card {
+            background-color: white;
+            border: 1px solid #dee2e6;
+            transition: box-shadow 0.3s ease;
+        }
+        .result-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .expandable-content {
+            display: none;
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+        .expand-btn {
+            background: none;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+        }
+        .expand-btn:hover {
+            color: #333;
+        }
+        .no-results {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="row">
+            <!-- Sección de Filtros -->
+            <div class="col-lg-3 col-md-4 mb-4">
+                <div class="filter-section p-3 sticky-top" style="top: 20px;">
+                    <h5 class="mb-3"><i class="fas fa-filter me-2"></i>Filtros</h5>
+                    
+                    <div class="mb-3">
+                        <label for="searchInput" class="form-label">Buscar</label>
+                        <input type="text" class="form-control" id="searchInput" placeholder="Buscar por razón social, objeto...">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="yearFilter" class="form-label">Año</label>
+                        <select class="form-select" id="yearFilter">
+                            <option value="">Todos los años</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="monthFilter" class="form-label">Mes</label>
+                        <select class="form-select" id="monthFilter">
+                            <option value="">Todos los meses</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="deptFilter" class="form-label">Departamento</label>
+                        <select class="form-select" id="deptFilter">
+                            <option value="">Todos los departamentos</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="typeFilter" class="form-label">Tipo de Convenio</label>
+                        <select class="form-select" id="typeFilter">
+                            <option value="">Todos los tipos</option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-outline-secondary w-100" onclick="clearFilters()">
+                        <i class="fas fa-eraser me-2"></i>Limpiar Filtros
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sección de Resultados -->
+            <div class="col-lg-9 col-md-8">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4>Convenios</h4>
+                    <span id="resultCount" class="badge bg-secondary">0 resultados</span>
+                </div>
+                
+                <div id="resultsContainer">
+                    <!-- Los resultados se cargarán aquí -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Datos de ejemplo
+        const data = [
+            {
+                year: "2022",
+                month: "Enero",
+                department: "Comunicaciones",
+                type: "Convenio y colaboración",
+                adminActType: "",
+                adminActName: "Convenio de colaboración entre las partes con el fin de establecer una dinámica de colaboración conjunta, para el traspaso de experiencias y conocimiento en torno a sus respectivas áreas de interés",
+                adminActDate: "",
+                adminActNumber: "",
+                companyName: "Universidad Adolfo Ibáñez",
+                firstName: "Harald María José",
+                lastName1: "Beyer De las Heras",
+                lastName2: "Burgos",
+                rut: "8.994.421-K 12.867.710-0",
+                partners: "Representantes",
+                object: "Convenio para establecer canales de cooperación, desarrollo e implementación de acciones, iniciativas y proyectos",
+                startDate: "06/01/2022",
+                endDate: "Indefinido",
+                amount: "",
+                observations: "La UAI a través de su Escuela de Comunicaciones y Periodismo y el CNTV constituirán un equipo de trabajo con funcionarios (as) de ambas reparticiones, que deberán implementar, coordinar y desarrollar las acciones necesarias para la realización de actividades que de este Convenio emanen.",
+                contractLink: "https://drive.google.com/file/d/1RQIXY1fSUQDGHaNTG5SSwGmK48PrAj-d/view?usp=drive_link",
+                adminActLink: "No aplica",
+                modificationLink: "No aplica"
+            },
+            {
+                year: "2023",
+                month: "Agosto",
+                department: "Comunicaciones",
+                type: "Convenios de colaboración entre organismos públicos y/o universidades",
+                adminActType: "",
+                adminActName: "Colaboración y ejecución conjunta de distintas actividades relacionadas a la vinculación con el medio",
+                adminActDate: "",
+                adminActNumber: "",
+                companyName: "UNIVERSIDAD DE CHILE",
+                firstName: "María Loreto",
+                lastName1: "Rebolledo",
+                lastName2: "González",
+                rut: "",
+                partners: "Decana Facultad de Comunicaciones e Imágen",
+                object: "Las partes se vincularán para realizar y producir actividades que podrán ser variadas, tales como encuestas, estudios, charlas, seminarios y otros relacionados con el ámbito de interés de ambas instituciones",
+                startDate: "29/08/2023",
+                endDate: "Duración de 4 años",
+                amount: "",
+                observations: "Colaboración y ejecución conjunta de distintas actividades relacionadas a la vinculación con los medios",
+                contractLink: "https://drive.google.com/file/d/1zhsxh5Rw8Inw3hVxgi4gW4fEQefiJjP1/view?usp=drive_link",
+                adminActLink: "No aplica",
+                modificationLink: "No aplica"
+            },
+            {
+                year: "2023",
+                month: "Octubre",
+                department: "Comunicaciones",
+                type: "Convenio sobre Franja Electoral Televisiva",
+                adminActType: "",
+                adminActName: "Convenio por Franja Electoral Televisiva para el Plebiscito Nacional Constitucional",
+                adminActDate: "",
+                adminActNumber: "",
+                companyName: "Televisión Nacional de Chile",
+                firstName: "Alfredo",
+                lastName1: "Ramirez",
+                lastName2: "Leigh",
+                rut: "12.017.741-9",
+                partners: "Director Ejecutivo",
+                object: "TVN y CNTV suscriben este convenio con el fin de prestar colaboración mutua para la transmisión y difusión de la Franja Electoral televisiva para el Plebiscito Nacional Constitucional, correspondiente al nuevo proceso para la elaboración de una Constitucion Política de la República",
+                startDate: "17/11/2023",
+                endDate: "14/12/2023",
+                amount: "",
+                observations: "Colaboración para transmisión de Franja Electoral Televisiva para el Plebiscito Nacional Constitucional y que tendrá una vigencia de aproximadamente 1 mes",
+                contractLink: "https://drive.google.com/drive/folders/1B-Bd4s8oWBaqufgb6weGfRz5k3ZxyyKL",
+                adminActLink: "No aplica",
+                modificationLink: "No aplica"
+            },
+            {
+                year: "2024",
+                month: "Abril",
+                department: "Comunicaciones",
+                type: "Convenios de colaboración entre organismos públicos y/o universidades",
+                adminActType: "Resolución Exenta",
+                adminActName: "Autoriza contratación directa con el proveedor Universidad de Chile (Facultad de Gobierno), RUT: 60.910.000-1, conforme a lo establecido en el artículo 37 de la Ley 21.094, para la realización de \"Diplomado Gestión y Desarrollo de Personas en el Estado\".",
+                adminActDate: "25/03/2024",
+                adminActNumber: "338",
+                companyName: "UNIVERSIDAD DE CHILE",
+                firstName: "N/A",
+                lastName1: "N/A",
+                lastName2: "N/A",
+                rut: "60.910.000-1",
+                partners: "No corresponde",
+                object: "Realización de \"Diplomado Gestión y Desarrollo de Personas en el Estado\".",
+                startDate: "12/04/2024",
+                endDate: "16/08/2024",
+                amount: "$ 500.000",
+                observations: "Normas aplicables a los contratos administrativos de suministro y prestación de servicios. Los contratos que celebren las universidades del Estado, a título oneroso, para el suministro de bienes muebles y de los servicios que se requieran para el desarrollo de sus funciones, se regirán por el artículo 9 del decreto con fuerza de ley Nº 1, de 2000, del Ministerio Secretaría General de la Presidencia, que fija el texto refundido, coordinado y sistematizado de la ley Nº 18.575, orgánica constitucional de Bases Generales de la Administración del Estado; y por las disposiciones de la ley Nº 19.886, de Bases sobre Contratos Administrativos de Suministro y Prestación de Servicios, y de su reglamento.",
+                contractLink: "https://transparencia.cntv.cl/2024/compras/338_AUTORIZA_CONTRATACI%C3%93N_CON_U._DE_CHILE_(DIPLOMADO_GESTI%C3%93N_Y_DE.pdf",
+                adminActLink: "No aplica",
+                modificationLink: "No aplica"
+            },
+            {
+                year: "2024",
+                month: "Abril",
+                department: "Comunicaciones",
+                type: "Convenios de colaboración entre organismos públicos y/o universidades",
+                adminActType: "Resolución Exenta",
+                adminActName: "Autoriza contratación directa con el proveedor Universidad de Chile (Facultad de Derecho), RUT: 60.910.000-1, conforme a lo establecido en el artículo 37 de la ley 21.094, para la realización de \"Diplomado en Derecho Administrativo\".",
+                adminActDate: "30/04/2024",
+                adminActNumber: "490",
+                companyName: "UNIVERSIDAD DE CHILE",
+                firstName: "N/A",
+                lastName1: "N/A",
+                lastName2: "N/A",
+                rut: "60.910.000-1",
+                partners: "No corresponde",
+                object: "Realización de \"Diplomado en Derecho Administrativo\".",
+                startDate: "15/04/2024",
+                endDate: "31/07/2024",
+                amount: "$ 500.000",
+                observations: "Normas aplicables a los contratos administrativos de suministro y prestación de servicios. Los contratos que celebren las universidades del Estado, a título oneroso, para el suministro de bienes muebles y de los servicios que se requieran para el desarrollo de sus funciones, se regirán por el artículo 9 del decreto con fuerza de ley Nº 1, de 2000, del Ministerio Secretaría General de la Presidencia, que fija el texto refundido, coordinado y sistematizado de la ley Nº 18.575, orgánica constitucional de Bases Generales de la Administración del Estado; y por las disposiciones de la ley Nº 19.886, de Bases sobre Contratos Administrativos de Suministro y Prestación de Servicios, y de su reglamento.",
+                contractLink: "https://transparencia.cntv.cl/2024/compras/490_AUTORIZA_CONTRATACI%C3%93N_DIRECTA_CON_U._DE_CHILE_(DIPLOMADO_EN_D.pdf",
+                adminActLink: "No aplica",
+                modificationLink: "No aplica"
+            },
+            {
+                year: "2024",
+                month: "Mayo",
+                department: "Comunicaciones",
+                type: "Convenios de colaboración entre organismos públicos y/o universidades",
+                adminActType: "Resolución Exenta",
+                adminActName: "Autoriza contratación directa con el proveedor Universidad de Chile (Facultad de Derecho), RUT: 60.910.000-1, conforme a lo establecido en el artículo 37 de la ley 21.094, para la realización de \"Curso de Producción de Video: After Effects\".",
+                adminActDate: "14/05/2024",
+                adminActNumber: "515",
+                companyName: "UNIVERSIDAD DE CHILE",
+                firstName: "N/A",
+                lastName1: "N/A",
+                lastName2: "N/A",
+                rut: "60.910.000-1",
+                partners: "No corresponde",
+                object: "Realización de \"Curso de Producción de Video: After Effects\".",
+                startDate: "05/08/2024",
+                endDate: "02/09/2024",
+                amount: "$ 341.595",
+                observations: "Normas aplicables a los contratos administrativos de suministro y prestación de servicios. Los contratos que celebren las universidades del Estado, a título oneroso, para el suministro de bienes muebles y de los servicios que se requieran para el desarrollo de sus funciones, se regirán por el artículo 9 del decreto con fuerza de ley Nº 1, de 2000, del Ministerio Secretaría General de la Presidencia, que fija el texto refundido, coordinado y sistematizado de la ley Nº 18.575, orgánica constitucional de Bases Generales de la Administración del Estado; y por las disposiciones de la ley Nº 19.886, de Bases sobre Contratos Administrativos de Suministro y Prestación de Servicios, y de su reglamento.",
+                contractLink: "https://transparencia.cntv.cl/2024/compras/515_AUTORIZA_CONTRATACI%C3%93N_DIRECTA_CON_U._DE_CHILE_(AFTER_EFFECTS).pdf",
+                adminActLink: "No aplica",
+                modificationLink: "No aplica"
+            }
+        ];
+
+        let filteredData = [...data];
+
+        // Inicializar filtros
+        function initializeFilters() {
+            const years = [...new Set(data.map(item => item.year))].sort();
+            const months = [...new Set(data.map(item => item.month))];
+            const departments = [...new Set(data.map(item => item.department))];
+            const types = [...new Set(data.map(item => item.type))];
+
+            populateSelect('yearFilter', years);
+            populateSelect('monthFilter', months);
+            populateSelect('deptFilter', departments);
+            populateSelect('typeFilter', types);
+        }
+
+        function populateSelect(selectId, options) {
+            const select = document.getElementById(selectId);
+            options.forEach(option => {
+                if (option) {
+                    const optionElement = document.createElement('option');
+                    optionElement.value = option;
+                    optionElement.textContent = option;
+                    select.appendChild(optionElement);
+                }
+            });
+        }
+
+        // Renderizar resultados
+        function renderResults(dataToRender = filteredData) {
+            const container = document.getElementById('resultsContainer');
+            const countElement = document.getElementById('resultCount');
+            
+            countElement.textContent = `${dataToRender.length} resultado${dataToRender.length !== 1 ? 's' : ''}`;
+
+            if (dataToRender.length === 0) {
+                container.innerHTML = '<div class="no-results p-4">No se encontraron resultados con los filtros aplicados.</div>';
+                return;
+            }
+
+            container.innerHTML = dataToRender.map((item, index) => `
+                <div class="result-card mb-3 rounded">
+                    <div class="p-3">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h6 class="mb-2 text-primary">${item.companyName}</h6>
+                                <p class="mb-1"><strong>Contacto:</strong> ${item.firstName} ${item.lastName1} ${item.lastName2}</p>
+                                <p class="mb-1"><strong>Departamento:</strong> ${item.department}</p>
+                                <p class="mb-1"><strong>Tipo:</strong> ${item.type}</p>
+                                <p class="mb-2 text-muted">${item.object.substring(0, 100)}${item.object.length > 100 ? '...' : ''}</p>
+                            </div>
+                            <div class="col-md-4 text-md-end">
+                                <span class="badge bg-light text-dark mb-2">${item.year} - ${item.month}</span><br>
+                                <small class="text-muted">
+                                    ${item.startDate} ${item.endDate !== 'Indefinido' ? '- ' + item.endDate : '(Indefinido)'}
+                                </small><br>
+                                <button class="expand-btn mt-2" onclick="toggleExpand(${index})">
+                                    <i class="fas fa-chevron-down" id="icon-${index}"></i> Ver más
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="expandable-content p-3" id="content-${index}">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Información del Convenio</h6>
+                                <p><strong>Tipo de acto administrativo:</strong> ${item.adminActType || 'Sin información'}</p>
+                                <p><strong>Denominación del acto:</strong> ${item.adminActName || 'Sin información'}</p>
+                                <p><strong>Fecha del acto administrativo:</strong> ${item.adminActDate || 'Sin información'}</p>
+                                <p><strong>Número del acto:</strong> ${item.adminActNumber || 'Sin información'}</p>
+                                <p><strong>Objeto completo:</strong> ${item.object}</p>
+                                <p><strong>Monto total:</strong> ${item.amount || 'Sin monto especificado'}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Información de Contacto</h6>
+                                <p><strong>Nombre completo:</strong> ${item.firstName} ${item.lastName1} ${item.lastName2}</p>
+                                <p><strong>RUT:</strong> ${item.rut || 'Sin información'}</p>
+                                <p><strong>Socios y accionistas:</strong> ${item.partners || 'Sin información'}</p>
+                                
+                                <h6 class="mt-3">Fechas y Observaciones</h6>
+                                <p><strong>Fecha inicio:</strong> ${item.startDate}</p>
+                                <p><strong>Fecha término:</strong> ${item.endDate}</p>
+                                <p><strong>Observaciones:</strong> ${item.observations || 'Sin observaciones'}</p>
+                                
+                                <h6 class="mt-3">Enlaces</h6>
+                                ${item.contractLink && item.contractLink !== 'No aplica' ? 
+                                    `<p><a href="${item.contractLink}" target="_blank" class="text-decoration-none">
+                                        <i class="fas fa-external-link-alt me-1"></i>Ver contrato
+                                    </a></p>` : '<p class="text-muted">Contrato: No disponible</p>'}
+                                ${item.adminActLink && item.adminActLink !== 'No aplica' ? 
+                                    `<p><a href="${item.adminActLink}" target="_blank" class="text-decoration-none">
+                                        <i class="fas fa-external-link-alt me-1"></i>Acto administrativo
+                                    </a></p>` : '<p class="text-muted">Acto administrativo: No disponible</p>'}
+                                ${item.modificationLink && item.modificationLink !== 'No aplica' ? 
+                                    `<p><a href="${item.modificationLink}" target="_blank" class="text-decoration-none">
+                                        <i class="fas fa-external-link-alt me-1"></i>Modificación
+                                    </a></p>` : '<p class="text-muted">Modificación: No disponible</p>'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Toggle expandir/contraer
+        function toggleExpand(index) {
+            const content = document.getElementById(`content-${index}`);
+            const icon = document.getElementById(`icon-${index}`);
+            
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                icon.className = 'fas fa-chevron-up';
+            } else {
+                content.style.display = 'none';
+                icon.className = 'fas fa-chevron-down';
+            }
+        }
+
+        // Filtrar datos
+        function filterData() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const yearFilter = document.getElementById('yearFilter').value;
+            const monthFilter = document.getElementById('monthFilter').value;
+            const deptFilter = document.getElementById('deptFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+
+            filteredData = data.filter(item => {
+                const matchesSearch = !searchTerm || 
+                    item.companyName.toLowerCase().includes(searchTerm) ||
+                    item.object.toLowerCase().includes(searchTerm) ||
+                    `${item.firstName} ${item.lastName1} ${item.lastName2}`.toLowerCase().includes(searchTerm);
+                
+                const matchesYear = !yearFilter || item.year === yearFilter;
+                const matchesMonth = !monthFilter || item.month === monthFilter;
+                const matchesDept = !deptFilter || item.department === deptFilter;
+                const matchesType = !typeFilter || item.type === typeFilter;
+
+                return matchesSearch && matchesYear && matchesMonth && matchesDept && matchesType;
+            });
+
+            renderResults();
+        }
+
+        // Limpiar filtros
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('yearFilter').value = '';
+            document.getElementById('monthFilter').value = '';
+            document.getElementById('deptFilter').value = '';
+            document.getElementById('typeFilter').value = '';
+            filteredData = [...data];
+            renderResults();
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', filterData);
+        document.getElementById('yearFilter').addEventListener('change', filterData);
+        document.getElementById('monthFilter').addEventListener('change', filterData);
+        document.getElementById('deptFilter').addEventListener('change', filterData);
+        document.getElementById('typeFilter').addEventListener('change', filterData);
+
+        // Inicializar
+        initializeFilters();
+        renderResults();
+    </script>
+</body>
+</html>
