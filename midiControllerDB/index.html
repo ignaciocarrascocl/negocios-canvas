@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIDI Controller Database</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    
+    <!-- Lodash for utility functions -->
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            --hover-shadow: 0 12px 35px rgba(0,0,0,0.15);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .hero-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .filter-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: none;
+            box-shadow: var(--card-shadow);
+            border-radius: 15px;
+        }
+        
+        .controller-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .controller-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+        
+        .controller-image {
+            height: 180px;
+            background: linear-gradient(45deg, #f0f2f5, #e9ecef);
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 2.5rem;
+        }
+        
+        .badge-custom {
+            background: var(--primary-gradient);
+            color: white;
+            font-weight: 500;
+        }
+        
+        .spec-item {
+            border-bottom: 1px solid #f0f0f0;
+            padding: 0.4rem 0;
+        }
+        
+        .spec-item:last-child {
+            border-bottom: none;
+        }
+        
+        .spec-label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.8rem;
+        }
+        
+        .spec-value {
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+        
+        .view-toggle {
+            background: white;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .btn-view {
+            border: none;
+            background: transparent;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-view.active {
+            background: var(--primary-gradient);
+            color: white;
+        }
+        
+        .search-box {
+            border-radius: 25px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        .list-item {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .list-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--hover-shadow);
+        }
+        
+        .price-tag {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            font-weight: bold;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 0.3s ease;
+        }
+        
+        .fade-enter-from, .fade-leave-to {
+            opacity: 0;
+        }
+        
+        .spinner-custom {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <div class="hero-header">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="mb-0">
+                            <i class="bi bi-music-note-beamed me-3"></i>
+                            MIDI Controller Database
+                        </h1>
+                        <p class="mb-0 mt-2 opacity-75">Encuentra el controlador MIDI perfecto para tu estudio</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <h3 class="mb-0">{{ filteredControllers.length }}</h3>
+                        <small class="opacity-75">controladores encontrados</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Filters Section -->
+            <div class="card filter-card mb-4">
+                <div class="card-body">
+                    <div class="row g-3">
+                        <!-- Search -->
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-search me-2"></i>Buscar
+                            </label>
+                            <input 
+                                type="text" 
+                                class="form-control search-box" 
+                                placeholder="Buscar por marca, modelo..."
+                                v-model="searchQuery"
+                            >
+                        </div>
+                        
+                        <!-- Brand Filter -->
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-building me-2"></i>Marca
+                            </label>
+                            <select class="form-select" v-model="selectedBrand">
+                                <option value="">Todas las marcas</option>
+                                <option v-for="brand in brands" :key="brand" :value="brand">
+                                    {{ brand }}
+                                </option>
+                            </select>
+                        </div>
+                        
+                        <!-- Keys Filter -->
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-keyboard me-2"></i>Teclas
+                            </label>
+                            <select class="form-select" v-model="selectedKeys">
+                                <option value="">Todas</option>
+                                <option v-for="keys in keyOptions" :key="keys" :value="keys">
+                                    {{ keys }} teclas
+                                </option>
+                            </select>
+                        </div>
+                        
+                        <!-- Year Filter -->
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-calendar me-2"></i>Año
+                            </label>
+                            <select class="form-select" v-model="selectedYear">
+                                <option value="">Todos los años</option>
+                                <option v-for="year in years" :key="year" :value="year">
+                                    {{ year }}
+                                </option>
+                            </select>
+                        </div>
+                        
+                        <!-- Sort -->
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-sort-down me-2"></i>Ordenar
+                            </label>
+                            <select class="form-select" v-model="sortBy">
+                                <option value="marca">Marca A-Z</option>
+                                <option value="modelo">Modelo A-Z</option>
+                                <option value="ano">Año (más nuevo)</option>
+                                <option value="teclas">Número de teclas</option>
+                                <option value="precio">Precio</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Price Range -->
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-currency-dollar me-2"></i>Rango de precio
+                            </label>
+                            <div class="row g-2">
+                                <div class="col">
+                                    <input 
+                                        type="number" 
+                                        class="form-control" 
+                                        placeholder="Mín $"
+                                        v-model="priceRange.min"
+                                    >
+                                </div>
+                                <div class="col">
+                                    <input 
+                                        type="number" 
+                                        class="form-control" 
+                                        placeholder="Máx $"
+                                        v-model="priceRange.max"
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Clear Filters -->
+                        <div class="col-md-6 d-flex align-items-end">
+                            <button class="btn btn-outline-secondary" @click="clearFilters">
+                                <i class="bi bi-arrow-clockwise me-2"></i>Limpiar filtros
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View Toggle -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="view-toggle p-1">
+                    <button 
+                        class="btn btn-view px-3"
+                        :class="{ active: viewMode === 'grid' }"
+                        @click="viewMode = 'grid'"
+                    >
+                        <i class="bi bi-grid me-2"></i>Galería
+                    </button>
+                    <button 
+                        class="btn btn-view px-3"
+                        :class="{ active: viewMode === 'list' }"
+                        @click="viewMode = 'list'"
+                    >
+                        <i class="bi bi-list me-2"></i>Lista
+                    </button>
+                </div>
+                
+                <small class="text-muted">
+                    Mostrando {{ filteredControllers.length }} de {{ controllers.length }} controladores
+                </small>
+            </div>
+
+            <!-- Loading -->
+            <div v-if="loading" class="text-center py-5">
+                <div class="spinner-border spinner-custom" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="mt-3 text-muted">Cargando controladores...</p>
+            </div>
+
+            <!-- Grid View -->
+            <transition name="fade">
+                <div v-if="!loading && viewMode === 'grid'" class="row g-4">
+                    <div 
+                        v-for="controller in paginatedControllers" 
+                        :key="controller.Modelo"
+                        class="col-lg-4 col-md-6"
+                    >
+                        <div class="card controller-card">
+                            <div class="controller-image">
+                                <i class="bi bi-music-note-beamed"></i>
+                            </div>
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h6 class="card-title mb-0 fw-bold">{{ controller.Modelo }}</h6>
+                                    <span class="badge badge-custom">{{ controller.Marca }}</span>
+                                </div>
+                                
+                                <div class="price-tag mb-3 text-center">
+                                    {{ formatPrice(controller.MSRP) }}
+                                </div>
+                                
+                                <!-- Specifications -->
+                                <div class="spec-item">
+                                    <div class="spec-label">Teclas</div>
+                                    <div class="spec-value">{{ controller["Número de Teclas"] }}</div>
+                                </div>
+                                
+                                <div class="spec-item">
+                                    <div class="spec-label">Tipo de Teclas</div>
+                                    <div class="spec-value">{{ controller["Tipo de Teclas"] }}</div>
+                                </div>
+                                
+                                <div class="spec-item">
+                                    <div class="spec-label">Año</div>
+                                    <div class="spec-value">{{ controller["Año de Producción"] }}</div>
+                                </div>
+                                
+                                <div class="spec-item">
+                                    <div class="spec-label">Dimensiones</div>
+                                    <div class="spec-value">{{ controller["Dimensiones (cm)"] }}</div>
+                                </div>
+                                
+                                <div class="spec-item">
+                                    <div class="spec-label">Sensibilidad</div>
+                                    <div class="spec-value">{{ controller.Sensibilidad }}</div>
+                                </div>
+                                
+                                <div class="spec-item">
+                                    <div class="spec-label">Conectividad</div>
+                                    <div class="spec-value">{{ controller.Conectividad }}</div>
+                                </div>
+                                
+                                <div class="spec-item">
+                                    <div class="spec-label">Controles</div>
+                                    <div class="spec-value">{{ controller["Controles Adicionales"] }}</div>
+                                </div>
+                                
+                                <div class="spec-item" v-if="controller['Características de Software']">
+                                    <div class="spec-label">Software Incluido</div>
+                                    <div class="spec-value">{{ controller["Características de Software"] }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </transition>
+
+            <!-- List View -->
+            <transition name="fade">
+                <div v-if="!loading && viewMode === 'list'">
+                    <div 
+                        v-for="controller in paginatedControllers" 
+                        :key="controller.Modelo"
+                        class="list-item p-4"
+                    >
+                        <div class="row align-items-start">
+                            <div class="col-md-2">
+                                <div class="controller-image" style="height: 120px; font-size: 2.5rem;">
+                                    <i class="bi bi-music-note-beamed"></i>
+                                </div>
+                                <div class="price-tag mt-2 text-center">
+                                    {{ formatPrice(controller.MSRP) }}
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="d-flex justify-content-between align-items-start mb-3">
+                                            <div>
+                                                <h5 class="fw-bold mb-1">{{ controller.Modelo }}</h5>
+                                                <span class="badge badge-custom me-2">{{ controller.Marca }}</span>
+                                                <small class="text-muted">{{ controller["Año de Producción"] }}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="spec-item">
+                                            <div class="spec-label">Número de Teclas</div>
+                                            <div class="spec-value">{{ controller["Número de Teclas"] }}</div>
+                                        </div>
+                                        
+                                        <div class="spec-item">
+                                            <div class="spec-label">Tipo de Teclas</div>
+                                            <div class="spec-value">{{ controller["Tipo de Teclas"] }}</div>
+                                        </div>
+                                        
+                                        <div class="spec-item">
+                                            <div class="spec-label">Dimensiones (cm)</div>
+                                            <div class="spec-value">{{ controller["Dimensiones (cm)"] }}</div>
+                                        </div>
+                                        
+                                        <div class="spec-item">
+                                            <div class="spec-label">Sensibilidad</div>
+                                            <div class="spec-value">{{ controller.Sensibilidad }}</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="spec-item">
+                                            <div class="spec-label">Conectividad</div>
+                                            <div class="spec-value">{{ controller.Conectividad }}</div>
+                                        </div>
+                                        
+                                        <div class="spec-item">
+                                            <div class="spec-label">Controles Adicionales</div>
+                                            <div class="spec-value">{{ controller["Controles Adicionales"] }}</div>
+                                        </div>
+                                        
+                                        <div class="spec-item" v-if="controller['Características de Software']">
+                                            <div class="spec-label">Software Incluido</div>
+                                            <div class="spec-value">{{ controller["Características de Software"] }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </transition>
+
+            <!-- No Results -->
+            <div v-if="!loading && filteredControllers.length === 0" class="text-center py-5">
+                <i class="bi bi-search display-1 text-muted"></i>
+                <h4 class="mt-3">No se encontraron controladores</h4>
+                <p class="text-muted">Intenta ajustar los filtros de búsqueda</p>
+                <button class="btn btn-primary" @click="clearFilters">
+                    <i class="bi bi-arrow-clockwise me-2"></i>Limpiar filtros
+                </button>
+            </div>
+
+            <!-- Pagination -->
+            <nav v-if="!loading && filteredControllers.length > itemsPerPage" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                        <button class="page-link" @click="currentPage = Math.max(1, currentPage - 1)">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                    </li>
+                    <li 
+                        v-for="page in totalPages" 
+                        :key="page"
+                        class="page-item"
+                        :class="{ active: page === currentPage }"
+                    >
+                        <button class="page-link" @click="currentPage = page">{{ page }}</button>
+                    </li>
+                    <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                        <button class="page-link" @click="currentPage = Math.min(totalPages, currentPage + 1)">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-5 py-4 bg-dark text-light">
+            <div class="container text-center">
+                <p class="mb-0">
+                    <i class="bi bi-music-note-beamed me-2"></i>
+                    MIDI Controller Database - {{ new Date().getFullYear() }}
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    controllers: [],
+                    loading: true,
+                    searchQuery: '',
+                    selectedBrand: '',
+                    selectedKeys: '',
+                    selectedYear: '',
+                    sortBy: 'marca',
+                    viewMode: 'grid',
+                    priceRange: {
+                        min: '',
+                        max: ''
+                    },
+                    currentPage: 1,
+                    itemsPerPage: 12
+                }
+            },
+            computed: {
+                brands() {
+                    return [...new Set(this.controllers.map(c => c.Marca))].sort();
+                },
+                keyOptions() {
+                    return [...new Set(this.controllers.map(c => c["Número de Teclas"]))].sort((a, b) => a - b);
+                },
+                years() {
+                    return [...new Set(this.controllers.map(c => c["Año de Producción"]))].sort((a, b) => b - a);
+                },
+                filteredControllers() {
+                    let filtered = this.controllers;
+
+                    // Search filter
+                    if (this.searchQuery) {
+                        const query = this.searchQuery.toLowerCase();
+                        filtered = filtered.filter(c => 
+                            c.Marca.toLowerCase().includes(query) ||
+                            c.Modelo.toLowerCase().includes(query) ||
+                            c["Tipo de Teclas"].toLowerCase().includes(query) ||
+                            c.Conectividad.toLowerCase().includes(query)
+                        );
+                    }
+
+                    // Brand filter
+                    if (this.selectedBrand) {
+                        filtered = filtered.filter(c => c.Marca === this.selectedBrand);
+                    }
+
+                    // Keys filter
+                    if (this.selectedKeys) {
+                        filtered = filtered.filter(c => c["Número de Teclas"] == this.selectedKeys);
+                    }
+
+                    // Year filter
+                    if (this.selectedYear) {
+                        filtered = filtered.filter(c => c["Año de Producción"] == this.selectedYear);
+                    }
+
+                    // Price range filter
+                    if (this.priceRange.min || this.priceRange.max) {
+                        filtered = filtered.filter(c => {
+                            const price = this.extractPrice(c.MSRP);
+                            const min = this.priceRange.min ? parseInt(this.priceRange.min) : 0;
+                            const max = this.priceRange.max ? parseInt(this.priceRange.max) : Infinity;
+                            return price >= min && price <= max;
+                        });
+                    }
+
+                    // Sort
+                    filtered = this.sortControllers(filtered);
+
+                    return filtered;
+                },
+                totalPages() {
+                    return Math.ceil(this.filteredControllers.length / this.itemsPerPage);
+                },
+                paginatedControllers() {
+                    const start = (this.currentPage - 1) * this.itemsPerPage;
+                    const end = start + this.itemsPerPage;
+                    return this.filteredControllers.slice(start, end);
+                }
+            },
+            methods: {
+                async loadControllers() {
+                    try {
+                        const response = await fetch('./midiDB.json');
+                        this.controllers = await response.json();
+                        this.loading = false;
+                    } catch (error) {
+                        console.error('Error loading controllers:', error);
+                        this.loading = false;
+                    }
+                },
+                sortControllers(controllers) {
+                    const sorted = [...controllers];
+                    
+                    switch (this.sortBy) {
+                        case 'marca':
+                            return sorted.sort((a, b) => a.Marca.localeCompare(b.Marca));
+                        case 'modelo':
+                            return sorted.sort((a, b) => a.Modelo.localeCompare(b.Modelo));
+                        case 'ano':
+                            return sorted.sort((a, b) => b["Año de Producción"] - a["Año de Producción"]);
+                        case 'teclas':
+                            return sorted.sort((a, b) => a["Número de Teclas"] - b["Número de Teclas"]);
+                        case 'precio':
+                            return sorted.sort((a, b) => this.extractPrice(a.MSRP) - this.extractPrice(b.MSRP));
+                        default:
+                            return sorted;
+                    }
+                },
+                extractPrice(priceString) {
+                    if (!priceString || typeof priceString !== 'string') return 0;
+                    const match = priceString.match(/\$(\d+)/);
+                    return match ? parseInt(match[1]) : 0;
+                },
+                formatPrice(priceString) {
+                    const price = this.extractPrice(priceString);
+                    return price > 0 ? `$${price}` : 'Consultar precio';
+                },
+                clearFilters() {
+                    this.searchQuery = '';
+                    this.selectedBrand = '';
+                    this.selectedKeys = '';
+                    this.selectedYear = '';
+                    this.priceRange.min = '';
+                    this.priceRange.max = '';
+                    this.currentPage = 1;
+                }
+            },
+            watch: {
+                filteredControllers() {
+                    this.currentPage = 1;
+                }
+            },
+            mounted() {
+                this.loadControllers();
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

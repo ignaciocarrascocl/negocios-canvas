@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #eef2f5; /* Lighter background */
+    color: #334155; /* Darker text for better contrast */
+    padding: 20px;
+    margin: 0;
+    line-height: 1.6;
+  }
+  .table-container {
+    overflow-x: auto;
+    background-color: #ffffff;
+    border-radius: 12px; /* More rounded corners */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); /* Softer, more pronounced shadow */
+    margin: 20px auto;
+    max-width: 1200px;
+  }
+  table {
+    width: 100%;
+    border-collapse: separate; /* Allows for border-spacing for rounded cells */
+    border-spacing: 0;
+  }
+  th, td {
+    padding: 18px 25px; /* More padding */
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid #e2e8f0; /* Lighter border */
+  }
+  th {
+    background-color: #f8fafc; /* Very light header background */
+    color: #1e293b; /* Darker header text */
+    font-weight: 700; /* Bolder header font */
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  th:first-child {
+    border-top-left-radius: 12px;
+  }
+  th:last-child {
+    border-top-right-radius: 12px;
+  }
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+  tbody tr:hover {
+    background-color: #f0f4f8; /* Subtle hover effect */
+  }
+  td:first-child, th:first-child {
+    font-weight: 600;
+  }
+  .keyboard-price {
+    color: #0d6efd; /* Brighter blue for current price */
+    font-weight: 700;
+    margin-top: 5px;
+    display: block;
+  }
+  .msrp-price {
+    color: #64748b; /* Gray for MSRP */
+    font-weight: 500;
+    font-size: 0.85em;
+    text-decoration: line-through; /* Strikethrough for MSRP */
+    margin-top: 2px;
+    display: block;
+  }
+  ul {
+    padding-left: 20px;
+    margin: 0;
+    list-style-type: disc; /* Use disc for list items */
+  }
+  li {
+    margin-bottom: 5px;
+  }
+  li:last-child {
+    margin-bottom: 0;
+  }
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .table-container {
+      margin: 10px auto;
+      border-radius: 8px;
+    }
+    table {
+      min-width: 700px; /* Adjust min-width for smaller tablets */
+    }
+    th, td {
+      padding: 12px 15px;
+      font-size: 0.9em;
+    }
+    th:first-child {
+      border-top-left-radius: 8px;
+    }
+    th:last-child {
+      border-top-right-radius: 8px;
+    }
+  }
+  @media (max-width: 480px) {
+    body {
+      padding: 10px;
+    }
+    .table-container {
+      border-radius: 6px;
+    }
+    table {
+      min-width: 600px; /* Further adjust min-width for mobile */
+    }
+    th, td {
+      padding: 10px 12px;
+      font-size: 0.8em;
+    }
+    th:first-child {
+      border-top-left-radius: 6px;
+    }
+    th:last-child {
+      border-top-right-radius: 6px;
+    }
+    .keyboard-price, .msrp-price {
+      font-size: 0.8em;
+    }
+    ul {
+      padding-left: 15px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Modelo y Precio</th>
+        <th>Conectores</th>
+        <th>Tamaño de teclas</th>
+        <th>Funcionalidades principales</th>
+        <th>Tamaño general</th>
+        <th>Poder</th>
+        <th>Reviews</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          Roland A-300 PRO<br>
+          <span class="keyboard-price">100.000 CLP</span>
+          <span class="msrp-price">MSRP: ~300.000 CLP</span>
+        </td>
+        <td>
+          <ul>
+            <li>USB-B</li>
+            <li>MIDI In/Out de 5 pines</li>
+            <li>2 entradas de pedal (Hold y Expression)</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>32 teclas de tamaño completo</li>
+            <li>Acción de sintetizador</li>
+            <li>Aftertouch de canal</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>45 controles asignables (9 perillas, 9 faders, 8 pads)</li>
+            <li>Arpegiador</li>
+            <li>Pitch Bend/Modulation Stick</li>
+            <li>Pantalla LCD retroiluminada de 16x2</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>606mm x 251mm x 91mm</li>
+            <li>Peso: 2.9 kg</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>Alimentado por bus USB</li>
+            <li>Adaptador de CA opcional</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>Considerado como uno de los mejores keybeds de sintetizador por su precio.</li>
+            <li>Los drivers para Windows 10 han presentado problemas de compatibilidad en el pasado.</li>
+            <li>Ideal para el control de DAW y de hardware.</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Alesis V25 (MKi)<br>
+          <span class="keyboard-price">65.000 CLP</span>
+          <span class="msrp-price">MSRP: ~120.000 CLP</span>
+        </td>
+        <td>
+          <ul>
+            <li>USB-B</li>
+            <li>1 entrada de pedal de sustain</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>25 teclas de tamaño completo</li>
+            <li>Acción de sintetizador sensible a la velocidad</li>
+            <li>La versión original podría tener teclas semi-ponderadas</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>8 pads retroiluminados sensibles a la velocidad</li>
+            <li>4 perillas asignables</li>
+            <li>Arpegiador</li>
+            <li>Ruedas de Pitch Bend y Modulación</li>
+            <li>No tiene pantalla</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>620mm x 244mm x 114mm</li>
+            <li>Peso: 2.5 kg</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>Alimentado por bus USB</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>Considerado duradero y asequible.</li>
+            <li>Algunos usuarios reportaron problemas de conectividad intermitente.</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Komplete Kontrol M32<br>
+          <span class="keyboard-price">60.000 CLP</span>
+          <span class="msrp-price">MSRP: ~140.000 CLP</span>
+        </td>
+        <td>
+          <ul>
+            <li>USB-B</li>
+            <li>1 entrada de pedal</li>
+            <li>No tiene salida MIDI de 5 pines</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>32 mini-teclas</li>
+            <li>Acción de sintetizador</li>
+            <li>No tiene aftertouch</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>8 perillas sensibles al tacto</li>
+            <li>2 tiras táctiles para Pitch y Modulación</li>
+            <li>Codificador push-4D para navegación</li>
+            <li>Arpegiador y funciones "Smart Play"</li>
+            <li>Pantalla OLED</li>
+            <li>No tiene pads</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>475mm x 167mm x 50mm</li>
+            <li>Peso: 1.45 kg</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>Alimentado por bus USB</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>Ideal para principiantes y usuarios del ecosistema de Native Instruments.</li>
+            <li>La portabilidad es un punto fuerte, pero no es el más pequeño.</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Akai MPK Mini Mk3<br>
+          <span class="keyboard-price">70.000 CLP</span>
+          <span class="msrp-price">MSRP: ~120.000 CLP</span>
+        </td>
+        <td>
+          <ul>
+            <li>USB-B</li>
+            <li>1 entrada de pedal de sustain</li>
+            <li>No tiene salida MIDI de 5 pines</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>25 mini-teclas</li>
+            <li>Tecnología de teclado de nueva generación</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>8 pads MPC con 2 bancos (16 en total)</li>
+            <li>8 perillas infinitas</li>
+            <li>Arpegiador</li>
+            <li>Joystick de 4 vías para Pitch y Modulación</li>
+            <li>Pantalla OLED</li>
+            <li>No tiene controles de transporte dedicados</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>318mm x 181mm x 44mm</li>
+            <li>Peso: 0.75 kg</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>Alimentado por bus USB</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>Compacto y robusto, ideal para productores de ritmos.</li>
+            <li>Los pads son calificados como "imperdonablemente rígidos" en una reseña.</li>
+            <li>El joystick es menos intuitivo que las ruedas de Pitch/Modulación.</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Novation Launchkey Mini Mk3<br>
+          <span class="keyboard-price">65.000 CLP</span>
+          <span class="msrp-price">MSRP: ~110.000 CLP</span>
+        </td>
+        <td>
+          <ul>
+            <li>USB-B</li>
+            <li>Salida MIDI de 3.5mm</li>
+            <li>1 entrada de pedal de sustain</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>25 mini-teclas</li>
+            <li>Acción de sintetizador</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>16 pads RGB</li>
+            <li>8 perillas</li>
+            <li>Arpegiador con modos "Mutate" y "Deviate"</li>
+            <li>2 tiras táctiles para Pitch y Modulación</li>
+            <li>No tiene pantalla</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>330mm x 173mm x 41mm</li>
+            <li>Peso: 0.69 kg</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>Alimentado por bus USB</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>El MIDI de 3.5mm es una gran ventaja para el control de hardware sin un computador.</li>
+            <li>Las teclas pueden sentirse un poco "esponjosas".</li>
+            <li>Ideal para la creatividad y para llevarlo de viaje.</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Novation Launchkey 25 MK3<br>
+          <span class="keyboard-price">75.000 CLP</span>
+          <span class="msrp-price">MSRP: ~160.000 CLP</span>
+        </td>
+        <td>
+          <ul>
+            <li>USB-C</li>
+            <li>Salida MIDI de 5 pines</li>
+            <li>1 entrada de pedal de sustain</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>25 teclas de tamaño completo</li>
+            <li>Acción de sintetizador sensible a la velocidad</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>16 pads</li>
+            <li>8 perillas</li>
+            <li>Ruedas de Pitch Bend y Modulación</li>
+            <li>Arpegiador</li>
+            <li>Pantalla de 2x16 caracteres</li>
+            <li>Funciones de flujo de trabajo como "Capture MIDI"</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>461mm x 251mm x 79mm</li>
+            <li>Peso: 1.8 kg</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>Alimentado por bus USB</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>La calidad de construcción es superior a su costo.</li>
+            <li>La integración con DAWs como Ableton Live y Logic es fluida.</li>
+            <li>La pantalla es muy útil para el flujo de trabajo.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>
